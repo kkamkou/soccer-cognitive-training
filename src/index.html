@@ -1,0 +1,104 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rainbow Random Number</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Stick+No+Bills:wght@200..800&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.js"></script>    
+</head>
+<body>
+    <!-- Component Templates -->
+    <template id="number-display-template">
+        <div 
+            class="number" 
+            :style="{ color: textColor, textShadow: textShadow }"
+            @dblclick="$emit('toggle-fullscreen')"
+        >
+            {{ number }}
+        </div>
+    </template>
+
+    <template id="cone-display-template">
+        <div class="cone-container" @dblclick="$emit('toggle-fullscreen')">
+            <div class="cone" :style="{ borderBottomColor: color }"></div>
+        </div>
+    </template>
+
+    <template id="settings-trigger-template">
+        <button 
+            class="settings-trigger" 
+            @click="$emit('open-settings')"
+        ></button>
+    </template>
+
+    <template id="settings-panel-template">
+        <div class="settings-panel">
+            <div class="settings-header">
+                <h2>Settings</h2>
+                <button class="close-btn" @click="$emit('close')">&times;</button>
+            </div>
+            
+            <div class="setting-group">
+                <label>Interval (seconds)</label>
+                <input 
+                    type="number" 
+                    :value="intervalSeconds"
+                    @change="$emit('update-interval', parseFloat($event.target.value))"
+                    min="1"
+                    max="60"
+                    step="0.5"
+                >
+                <div class="setting-info">Change how often the number updates (1-60 seconds)</div>
+            </div>
+            
+            <div class="setting-group">
+                <label>Show Cones</label>
+                <div class="checkbox-wrapper">
+                    <input 
+                        type="checkbox" 
+                        :checked="showConesEnabled"
+                        @change="$emit('toggle-cones', $event.target.checked)"
+                        id="coneToggle"
+                    >
+                    <label for="coneToggle">Sometimes show colored cones</label>
+                </div>
+                <div class="setting-info">When enabled, colored cones will randomly appear instead of numbers</div>
+            </div>
+        </div>
+    </template>
+
+    <div id="app">
+        <number-display v-if="!showCone"
+            :number="currentNumber"
+            :text-color="textColor"
+            :text-shadow="textShadow"
+            @toggle-fullscreen="toggleFullscreen"></number-display>
+
+        <cone-display v-else
+            :color="currentConeColor"
+            @toggle-fullscreen="toggleFullscreen"></cone-display>
+        
+        <settings-trigger @open-settings="settingsOpen = true"></settings-trigger>
+        
+        <settings-panel v-if="settingsOpen"
+            :interval-seconds="intervalSeconds"
+            :show-cones-enabled="showConesEnabled"
+            @close="settingsOpen = false"
+            @update-interval="updateInterval"
+            @toggle-cones="showConesEnabled = $event"></settings-panel>
+    </div>
+
+    <script src="components/NumberDisplay.js"></script>
+    <script src="components/ConeDisplay.js"></script>
+    <script src="components/SettingsTrigger.js"></script>
+    <script src="components/SettingsPanel.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
