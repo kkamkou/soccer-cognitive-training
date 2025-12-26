@@ -1,6 +1,11 @@
-const { createApp } = Vue;
+<script>
 
-createApp({
+import NumberDisplay from './components/NumberDisplay.js';
+import ConeDisplay from './components/ConeDisplay.js';
+import SettingsTrigger from './components/SettingsTrigger.js';
+import SettingsPanel from './components/SettingsPanel.js';
+
+export default {
     components: {
         NumberDisplay,
         ConeDisplay,
@@ -46,7 +51,7 @@ createApp({
                 const randomIndex = Math.floor(Math.random() * this.coneColors.length);
                 newColor = this.coneColors[randomIndex];
             } while (newColor === this.previousConeColor && newColor === this.currentConeColor);
-            
+
             this.previousConeColor = this.currentConeColor;
             this.currentConeColor = newColor;
 
@@ -58,21 +63,21 @@ createApp({
             do {
                 newNumber = Math.floor(Math.random() * 10);
             } while (newNumber === this.previousNumber || newNumber === this.currentNumber);
-            
+
             this.previousNumber = this.currentNumber;
             this.currentNumber = newNumber;
-            
+
             let newColor;
             do {
                 const randomIndex = Math.floor(Math.random() * this.rainbowColors.length);
                 newColor = this.rainbowColors[randomIndex];
             } while (newColor === this.previousColor || newColor === this.currentColor);
-            
+
             this.previousColor = this.currentColor;
             this.currentColor = newColor;
-            
+
             this.textColor = this.getContrastColor(newColor);
-            
+
             document.getElementById('app').style.backgroundColor = this.currentColor;
         },
         getContrastColor(hexColor) {
@@ -112,4 +117,5 @@ createApp({
             }
         }
     }
-}).mount('#app');
+}
+</script>

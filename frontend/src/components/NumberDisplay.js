@@ -1,4 +1,4 @@
-const NumberDisplay = {
+export default {
     name: 'NumberDisplay',
     props: {
         number: {

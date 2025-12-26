@@ -1,4 +1,4 @@
-const SettingsPanel = {
+export default {
     name: 'SettingsPanel',
     props: {
         intervalSeconds: {

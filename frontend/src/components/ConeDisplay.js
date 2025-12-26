@@ -1,4 +1,4 @@
-const ConeDisplay = {
+export default {
     name: 'ConeDisplay',
     props: {
         color: {
