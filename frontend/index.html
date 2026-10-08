@@ -30,6 +30,12 @@
         </div>
     </template>
 
+    <template id="zone-display-template">
+        <div class="zone-container" @dblclick="$emit('toggle-fullscreen')">
+            <div class="zone-rectangle" :style="rectangleStyle"></div>
+        </div>
+    </template>
+
     <template id="settings-trigger-template">
         <button 
             class="settings-trigger" 
@@ -58,6 +64,33 @@
             </div>
             
             <div class="setting-group">
+                <label>Show Numbers</label>
+                <div class="checkbox-wrapper">
+                    <input 
+                        type="checkbox" 
+                        :checked="showNumbersEnabled"
+                        @change="$emit('toggle-numbers', $event.target.checked)"
+                        id="numberToggle"
+                    >
+                    <label for="numberToggle">Show numbers</label>
+                </div>
+                <div class="setting-info">When enabled, numbers will appear</div>
+            </div>
+
+            <div class="setting-group">
+                <label>Numbers probability (%)</label>
+                <input 
+                    type="number" 
+                    :value="numberProbability"
+                    @change="$emit('update-number-probability', parseInt($event.target.value, 10))"
+                    :disabled="!showNumbersEnabled"
+                    min="0"
+                    max="100"
+                    step="1"
+                >
+            </div>
+
+            <div class="setting-group">
                 <label>Show Cones</label>
                 <div class="checkbox-wrapper">
                     <input 
@@ -70,28 +103,83 @@
                 </div>
                 <div class="setting-info">When enabled, colored cones will randomly appear instead of numbers</div>
             </div>
+
+            <div class="setting-group">
+                <label>Cones probability (%)</label>
+                <input 
+                    type="number" 
+                    :value="coneProbability"
+                    @change="$emit('update-cone-probability', parseInt($event.target.value, 10))"
+                    :disabled="!showConesEnabled"
+                    min="0"
+                    max="100"
+                    step="1"
+                >
+            </div>
+
+            <div class="setting-group">
+                <label>Zones of the Goal</label>
+                <div class="checkbox-wrapper">
+                    <input 
+                        type="checkbox" 
+                        :checked="showZonesEnabled"
+                        @change="$emit('toggle-zones', $event.target.checked)"
+                        id="zoneToggle"
+                    >
+                    <label for="zoneToggle">Show zones of the goal</label>
+                </div>
+                <div class="setting-info">When enabled, the screen is divided into goal zones</div>
+            </div>
+
+            <div class="setting-group">
+                <label>Zones probability (%)</label>
+                <input 
+                    type="number" 
+                    :value="zoneProbability"
+                    @change="$emit('update-zone-probability', parseInt($event.target.value, 10))"
+                    :disabled="!showZonesEnabled"
+                    min="0"
+                    max="100"
+                    step="1"
+                >
+            </div>
         </div>
     </template>
 
     <div id="app">
-        <number-display v-if="!showCone"
+        <number-display v-if="contentType === 'number'"
             :number="currentNumber"
             :text-color="textColor"
             :text-shadow="textShadow"
             @toggle-fullscreen="toggleFullscreen"></number-display>
 
-        <cone-display v-else
+        <cone-display v-else-if="contentType === 'cone'"
             :color="currentConeColor"
             @toggle-fullscreen="toggleFullscreen"></cone-display>
+
+        <zone-display v-else-if="contentType === 'zone'"
+            :color="currentZoneColor"
+            :position="currentZone.style"
+            @toggle-fullscreen="toggleFullscreen"></zone-display>
         
         <settings-trigger @open-settings="settingsOpen = true"></settings-trigger>
         
         <settings-panel v-if="settingsOpen"
             :interval-seconds="intervalSeconds"
+            :show-numbers-enabled="showNumbersEnabled"
             :show-cones-enabled="showConesEnabled"
+            :show-zones-enabled="showZonesEnabled"
+            :number-probability="numberProbability"
+            :cone-probability="coneProbability"
+            :zone-probability="zoneProbability"
             @close="settingsOpen = false"
             @update-interval="updateInterval"
-            @toggle-cones="showConesEnabled = $event"></settings-panel>
+            @toggle-numbers="toggleType('number', $event)"
+            @toggle-cones="toggleType('cone', $event)"
+            @toggle-zones="toggleType('zone', $event)"
+            @update-number-probability="updateProbability('number', $event)"
+            @update-cone-probability="updateProbability('cone', $event)"
+            @update-zone-probability="updateProbability('zone', $event)"></settings-panel>
     </div>
 
     <script type="module" src="/src/main.ts"></script>

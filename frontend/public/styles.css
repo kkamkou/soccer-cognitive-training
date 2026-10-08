@@ -51,6 +51,19 @@ body, html {
     cursor: pointer;
 }
 
+/* Zone Display Styles */
+.zone-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.zone-rectangle {
+    position: absolute;
+}
+
 /* Settings Trigger Styles */
 .settings-trigger {
     position: fixed;
@@ -133,6 +146,11 @@ body, html {
 .setting-group input[type="number"]:focus {
     outline: none;
     border-color: #4CAF50;
+}
+
+.setting-group input[type="number"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .setting-group input[type="checkbox"] {
